@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
     authStrategy: new LocalAuth({ clientId: socket.id }), // Each instance has its own session
     puppeteer: { 
       headless: true,
-    //   executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     }
   });
