@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WhatsApp Bulk Sender</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    /* Base Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e9f7ef;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h2 {
+      color: #075E54;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    /* Form Styling */
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      color: #075E54;
+    }
+    input[type="file"],
+    textarea,
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    button {
+      background-color: #25D366;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #1ebe5d;
+    }
+    /* QR and Status */
+    #qr-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #qr {
+      border: 2px solid #25D366;
+      border-radius: 8px;
+    }
+    #status {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>WhatsApp Bulk Sender</h2>
+  <div id="qr-container">
+    <img id="qr" alt="QR Code will appear here" style="max-width: 300px;"/>
+  </div>
+  <div id="status" style="margin-bottom:20px; color: green;"></div>
+  
+  <form id="sendForm" action="/send" method="post" enctype="multipart/form-data">
+    <!-- Hidden field to store the user's socket ID -->
+    <input type="hidden" name="socketId" id="socketId" />
+
+    <label>Upload Excel File (with phone numbers in the first column):</label>
+    <input type="file" name="excelFile" accept=".xlsx,.xls" required><br><br>
+    
+    <label>Upload Image (optional):</label>
+    <input type="file" name="imageFile" accept="image/*"><br><br>
+    
+    <label>Upload PDF (optional):</label>
+    <input type="file" name="pdfFile" accept="application/pdf"><br><br>
+    
+    <label>Message 1:</label>
+    <textarea name="message1" required></textarea><br><br>
+    
+    <label>Message 2 (optional):</label>
+    <textarea name="message2"></textarea><br><br>
+    
+    <label>Message 3 (optional):</label>
+    <textarea name="message3"></textarea><br><br>
+    
+    <label>Message 4 (optional):</label>
+    <textarea name="message4"></textarea><br><br>
+    
+    <label>Message 5 (optional):</label>
+    <textarea name="message5"></textarea><br><br>
+    
+    <label>Message 6 (optional):</label>
+    <textarea name="message6"></textarea><br><br>
+    
+    <label>Message 7 (optional):</label>
+    <textarea name="message7"></textarea><br><br>
+    
+    <label>Message 8 (optional):</label>
+    <textarea name="message8"></textarea><br><br>
+    
+    <label>Message 9 (optional):</label>
+    <textarea name="message9"></textarea><br><br>
+    
+    <label>Message 10 (optional):</label>
+    <textarea name="message10"></textarea><br><br>
+    
+    <button type="submit">Send Messages</button>
+  </form>
+
+  <script>
+    const socket = io();
+    socket.on('connect', () => {
+      // Store the socket ID in the hidden field
+      document.getElementById('socketId').value = socket.id;
+    });
+    socket.on('qr', (url) => {
+      // Display the QR code for this user only
+      document.getElementById('qr').src = url;
+    });
+    socket.on('ready', (msg) => {
+      document.getElementById('status').innerText = msg;
+    });
+    socket.on('auth_failure', (msg) => {
+      document.getElementById('status').innerText = 'Authentication failed: ' + msg;
+    });
+    socket.on('disconnected', (msg) => {
+      document.getElementById('status').innerText = msg;
+    });
+  </script>
+</body>
+</html>
